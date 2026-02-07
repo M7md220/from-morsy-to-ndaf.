@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اختبار قواعد اللغة الفرنسية</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #ffffff 0%, #f0f0f0 100%);
+            min-height: 100vh;
+            padding: 10px;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            min-height: 500px;
+            border: 2px solid #c8102e;
+        }
+        
+        header {
+            background: linear-gradient(90deg, #c8102e 0%, #012169 100%);
+            color: white;
+            padding: 20px 15px;
+            text-align: center;
+        }
+        
+        header h1 {
+            font-size: 1.8rem;
+            margin-bottom: 8px;
+        }
+        
+        header p {
+            opacity: 0.9;
+            font-size: 1rem;
+        }
+        
+        .content {
+            padding: 20px;
+        }
+        
+        .info-section, .quiz-section, .result-section {
+            display: none;
+        }
+        
+        .active-section {
+            display: block;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #012169;
+            font-size: 1rem;
+        }
+        
+        input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+        
+        input:focus {
+            border-color: #c8102e;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(200, 16, 46, 0.2);
+        }
+        
+        .btn {
+            background: linear-gradient(to right, #c8102e, #a00d25);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-block;
+            text-align: center;
+            border: 1px solid #012169;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+        
+        .btn:hover {
+            background: linear-gradient(to right, #a00d25, #800a1d);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .btn:active {
+            transform: translateY(0);
+        }
+        
+        .btn-start {
+            margin-top: 5px;
+        }
+        
+        .timer-container {
+            background-color: #f8f9fa;
+            padding: 12px 15px;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #e9ecef;
+            border-right: 4px solid #c8102e;
+        }
+        
+        .timer-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .timer {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: #012169;
+        }
+        
+        .timer.warning {
+            color: #c8102e;
+        }
+        
+        .question-counter {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #c8102e;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+        
+        .question-container {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border-right: 4px solid #012169;
+        }
+        
+        .question-text {
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            color: #012169;
+            line-height: 1.4;
+        }
+        
+        .options-container {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 10px;
+        }
+        
+        .option {
+            background-color: white;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+        }
+        
+        .option:hover {
+            background-color: #f0f5ff;
+            border-color: #012169;
+        }
+        
+        .option.selected {
+            background-color: #ffe6ea;
+            border-color: #c8102e;
+        }
+        
+        .option.correct {
+            background-color: #d4edda;
+            border-color: #28a745;
+        }
+        
+        .option.wrong {
+            background-color: #f8d7da;
+            border-color: #dc3545;
+        }
+        
+        .option-letter {
+            display: inline-block;
+            width: 35px;
+            height: 35px;
+            background-color: #e9ecef;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 35px;
+            margin-left: 10px;
+            font-weight: 700;
+            color: #495057;
+            border: 1px solid #012169;
+            flex-shrink: 0;
+        }
+        
+        .option.selected .option-letter {
+            background-color: #c8102e;
+            color: white;
+            border-color: #c8102e;
+        }
+        
+        .navigation-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .result-section {
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .result-icon {
+            font-size: 3.5rem;
+            color: #c8102e;
+            margin-bottom: 15px;
+        }
+        
+        .result-title {
+            font-size: 1.8rem;
+            color: #012169;
+            margin-bottom: 15px;
+        }
+        
+        .score {
+            font-size: 3rem;
+            font-weight: 800;
+            color: #c8102e;
+            margin: 15px 0;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        
+        .result-details {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 12px;
+            margin: 20px 0;
+            text-align: right;
+            border-right: 4px solid #012169;
+        }
+        
+        .result-details h3 {
+            color: #012169;
+            margin-bottom: 10px;
+            font-size: 1.3rem;
+        }
+        
+        .result-details p {
+            font-size: 1rem;
+            margin-bottom: 8px;
+            line-height: 1.5;
+        }
+        
+        .restart-btn {
+            margin-top: 15px;
+        }
+        
+        .lesson-group {
+            display: inline-block;
+            background-color: #e3ecff;
+            color: #012169;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-weight: 600;
+            margin-top: 8px;
+            border: 1px solid #c8102e;
+            font-size: 0.9rem;
+        }
+        
+        .progress-bar {
+            height: 8px;
+            background-color: #e9ecef;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            overflow: hidden;
+            border: 1px solid #012169;
+        }
+        
+        .progress {
+            height: 100%;
+            background: linear-gradient(to right, #c8102e, #012169);
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+        
+        .user-info {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #012169;
+        }
+        
+        .flag-colors {
+            display: flex;
+            height: 8px;
+            margin-top: 12px;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .flag-blue {
+            background-color: #012169;
+            flex: 1;
+        }
+        
+        .flag-white {
+            background-color: #ffffff;
+            flex: 1;
+            border-left: 1px solid #012169;
+            border-right: 1px solid #012169;
+        }
+        
+        .flag-red {
+            background-color: #c8102e;
+            flex: 1;
+        }
+        
+        .instructions {
+            margin-top: 20px;
+        }
+        
+        @media (min-width: 480px) {
+            .btn {
+                width: auto;
+                margin-bottom: 0;
+            }
+            
+            .navigation-buttons {
+                flex-direction: row;
+                justify-content: space-between;
+            }
+            
+            .navigation-buttons button {
+                width: calc(33.333% - 7px);
+            }
+        }
+        
+        @media (min-width: 768px) {
+            body {
+                padding: 20px;
+            }
+            
+            header {
+                padding: 25px;
+            }
+            
+            header h1 {
+                font-size: 2rem;
+            }
+            
+            .content {
+                padding: 30px;
+            }
+            
+            .question-text {
+                font-size: 1.3rem;
+            }
+            
+            .timer-container {
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: center;
+            }
+            
+            .result-icon {
+                font-size: 4.5rem;
+            }
+            
+            .score {
+                font-size: 3.5rem;
+            }
+        }
+        
+        @media (min-width: 992px) {
+            .options-container {
+                grid-template-columns: 1fr 1fr;
+                gap: 15px;
+            }
+            
+            .question-text {
+                font-size: 1.4rem;
+            }
+            
+            .score {
+                font-size: 4rem;
+            }
+            
+            .result-icon {
+                font-size: 5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-language"></i> اختبار قواعد اللغة الفرنسية</h1>
+            <p>اختبر معرفتك بقواعد اللغة الفرنسية - جميع المحاور</p>
+            <div class="flag-colors">
+                <div class="flag-blue"></div>
+                <div class="flag-white"></div>
+                <div class="flag-red"></div>
+            </div>
+        </header>
+        
+        <div class="content">
+            <section id="info-section" class="info-section active-section">
+                <div class="form-group">
+                    <label for="user-name"><i class="fas fa-user"></i> اسم الطالب:</label>
+                    <input type="text" id="user-name" placeholder="أدخل اسمك الكامل">
+                </div>
+                
+                <div class="lesson-group" style="text-align: center; margin-bottom: 20px;">
+                    <i class="fas fa-book-open"></i> الاختبار يشمل جميع محاور قواعد اللغة الفرنسية
+                </div>
+                
+                <button id="start-quiz" class="btn btn-start">
+                    <i class="fas fa-play-circle"></i> بدء الاختبار
+                </button>
+                
+                <div class="result-details instructions">
+                    <h3>تعليمات الاختبار:</h3>
+                    <p>• الاختبار يحتوي على 10 أسئلة متنوعة من جميع محاور القواعد الفرنسية</p>
+                    <p>• وقت الاختبار: 10 دقائق (600 ثانية)</p>
+                    <p>• يجب اختيار إجابة واحدة لكل سؤال</p>
+                    <p>• يمكنك التعديل على إجاباتك قبل إنهاء الاختبار</p>
+                    <p>• ستظهر نتيجتك النهائية فور انتهاء الوقت أو تقديمك للاختبار</p>
+                </div>
+            </section>
+            
+            <section id="quiz-section" class="quiz-section">
+                <div class="timer-container">
+                    <div class="timer-info">
+                        <span id="user-info" class="user-info"></span>
+                        <div class="timer" id="timer">10:00</div>
+                    </div>
+                    <div class="lesson-group">جميع المحاور</div>
+                </div>
+                
+                <div class="progress-bar">
+                    <div class="progress" id="progress"></div>
+                </div>
+                
+                <div class="question-counter" id="question-counter">السؤال 1 من 10</div>
+                
+                <div class="question-container">
+                    <div class="question-text" id="question-text"></div>
+                    <div class="options-container" id="options-container"></div>
+                </div>
+                
+                <div class="navigation-buttons">
+                    <button id="prev-btn" class="btn">
+                        <i class="fas fa-arrow-right"></i> السابق
+                    </button>
+                    <button id="next-btn" class="btn">
+                        التالي <i class="fas fa-arrow-left"></i>
+                    </button>
+                    <button id="submit-btn" class="btn">
+                        <i class="fas fa-paper-plane"></i> إنهاء الاختبار
+                    </button>
+                </div>
+            </section>
+            
+            <section id="result-section" class="result-section">
+                <div class="result-icon">
+                    <i class="fas fa-award"></i>
+                </div>
+                
+                <h2 class="result-title" id="result-title">نتيجة الاختبار</h2>
+                
+                <div id="result-user-info"></div>
+                
+                <div class="score" id="score">0%</div>
+                
+                <div class="result-details">
+                    <h3>ملخص النتيجة:</h3>
+                    <p id="result-summary"></p>
+                    <p id="time-summary"></p>
+                    <p id="correct-answers"></p>
+                    <p id="wrong-answers"></p>
+                    <div class="lesson-group" style="margin-top: 10px; display: inline-block;">
+                        <i class="fas fa-book"></i> جميع محاور قواعد اللغة الفرنسية
+                    </div>
+                </div>
+                
+                <button id="restart-btn" class="btn restart-btn">
+                    <i class="fas fa-redo"></i> إعادة الاختبار
+                </button>
+            </section>
+        </div>
+    </div>
+
+    <script>
+        const quizQuestions = [
+            {
+                question: "ما هي الطريقة الأكثر شيوعاً لاقتراح نشاط في المواقف؟",
+                options: [
+                    "استخدام التعبير 'Je veux' + مصدر",
+                    "استخدام التعبير 'Ça te dit de' + مصدر",
+                    "استخدام التعبير 'Il faut' + مصدر",
+                    "استخدام صيغة الأمر مع الضمير 'vous'"
+                ],
+                correctAnswer: 1,
+                lessonGroup: "المحور الأول: اقتراح نشاط"
+            },
+            {
+                question: "كيف يتم تصريف الفعل في تعبير 'Ça te dit'؟",
+                options: [
+                    "يُصرف دائماً مع الضمير 'tu'",
+                    "يُصرف دائماً مع الضمير 'il' أو 'elle'",
+                    "يُصرف دائماً مع الضمير 'nous'",
+                    "لا يتصرف ويبقى في المصدر"
+                ],
+                correctAnswer: 1,
+                lessonGroup: "المحور الأول: اقتراح نشاط"
+            },
+            {
+                question: "ما الفرق بين كلمتي 'Avis' و 'Opinion' عند السؤال عن الرأي؟",
+                options: [
+                    "كلاهما مذكر ويأخذان 'Quel' و 'ton'",
+                    "كلمة 'Avis' مذكر وكلمة 'Opinion' مؤنث",
+                    "كلاهما مؤنث ويأخذان 'Quelle' و 'ta'",
+                    "لا يوجد فرق بينهما"
+                ],
+                correctAnswer: 1,
+                lessonGroup: "المحور الثاني: طلب الرأي"
+            },
+            {
+                question: "ما هو حرف الجر الذي يأتي بعد 'Avis' و 'Opinion'؟",
+                options: [
+                    "حرف الجر 'de'",
+                    "حرف الجر 'à'",
+                    "حرف الجر 'sur'",
+                    "حرف الجر 'pour'"
+                ],
+                correctAnswer: 2,
+                lessonGroup: "المحور الثاني: طلب الرأي"
+            },
+            {
+                question: "ما هي الأفعال والتعبيرات المستخدمة للإلزام؟",
+                options: [
+                    "فعل 'Vouloir' وتعبير 'Avoir envie de'",
+                    "فعل 'Pouvoir' وتعبير 'Ça te dit de'",
+                    "فعل 'Devoir' وتعبير 'Il faut'",
+                    "فعل 'Dire' وتعبير 'Être pour'"
+                ],
+                correctAnswer: 2,
+                lessonGroup: "المحور الثالث: التعبير عن الإلزام"
+            },
+            {
+                question: "ما الملحوظة الهامة عند استخدام 'Être obligé de'؟",
+                options: [
+                    "كلمة 'obligé' لا تتغير أبداً",
+                    "كلمة 'obligé' تتغير حسب الفاعل (e للمؤنث، s للجمع)",
+                    "يجب أن يتبعها فعل في صيغة الأمر",
+                    "يجب أن يتبعها حرف الجر 'à'"
+                ],
+                correctAnswer: 1,
+                lessonGroup: "المحور الثالث: التعبير عن الإلزام"
+            },
+            {
+                question: "كيف نجيب على سؤال منفي؟",
+                options: [
+                    "نستخدم 'Oui' للموافقة و'Non' للرفض",
+                    "نستخدم 'Si' لإثبات الفعل المنفي و'Non' للرفض",
+                    "نستخدم 'Non' فقط للإجابة",
+                    "نستخدم 'Oui' فقط للإجابة"
+                ],
+                correctAnswer: 1,
+                lessonGroup: "المحور الرابع: الإجابة على الأسئلة"
+            },
+            {
+                question: "ما هي الطريقة السهلة التي اقترحها 'مسيو عماد' لحل سؤال (Si / Non)؟",
+                options: [
+                    "استخدام 'Oui' دائماً مع السؤال المنفي",
+                    "احذف 'النفي' من ذهنك وتعامل معه كسؤال مثبت",
+                    "استخدام 'Non' دائماً مع السؤال المنفي",
+                    "تجاهل السؤال والانتقال إلى التالي"
+                ],
+                correctAnswer: 1,
+                lessonGroup: "المحور الرابع: الإجابة على الأسئلة"
+            },
+            {
+                question: "كيف تُصرف أفعال 'Vouloir' و 'Pouvoir'؟",
+                options: [
+                    "ينتهيان بنفس النهايات: (e, es, e, ons, ez, ent)",
+                    "ينتهيان بنفس النهايات: (x, x, t, ons, ez, ent)",
+                    "ينتهيان بنفس النهايات: (s, s, t, ons, ez, ent)",
+                    "لا يشتركان في نفس النهايات"
+                ],
+                correctAnswer: 1,
+                lessonGroup: "المحور الخامس: تصريفات الأفعال"
+            },
+            {
+                question: "كيف يُصرف فعل 'Devoir'؟",
+                options: [
+                    "Je dois, tu dois, il doit, nous devons, vous devez, ils doivent",
+                    "Je deve, tu deves, il deve, nous devons, vous devez, ils devent",
+                    "Je dois, tu dois, il dois, nous devons, vous devez, ils doivent",
+                    "Je deve, tu deves, il deves, nous devons, vous devez, ils devent"
+                ],
+                correctAnswer: 0,
+                lessonGroup: "المحور الخامس: تصريفات الأفعال"
+            }
+        ];
+
+        const infoSection = document.getElementById('info-section');
+        const quizSection = document.getElementById('quiz-section');
+        const resultSection = document.getElementById('result-section');
+        const userNameInput = document.getElementById('user-name');
+        const startQuizBtn = document.getElementById('start-quiz');
+        const timerElement = document.getElementById('timer');
+        const questionCounterElement = document.getElementById('question-counter');
+        const questionTextElement = document.getElementById('question-text');
+        const optionsContainer = document.getElementById('options-container');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const submitBtn = document.getElementById('submit-btn');
+        const progressBar = document.getElementById('progress');
+        const userInfoElement = document.getElementById('user-info');
+        const resultUserInfoElement = document.getElementById('result-user-info');
+        const scoreElement = document.getElementById('score');
+        const resultSummaryElement = document.getElementById('result-summary');
+        const timeSummaryElement = document.getElementById('time-summary');
+        const correctAnswersElement = document.getElementById('correct-answers');
+        const wrongAnswersElement = document.getElementById('wrong-answers');
+        const restartBtn = document.getElementById('restart-btn');
+        const resultTitleElement = document.getElementById('result-title');
+
+        let currentQuestionIndex = 0;
+        let userAnswers = [];
+        let score = 0;
+        let timeLeft = 600;
+        let timerInterval;
+        let quizStarted = false;
+
+        function initQuiz() {
+            startQuizBtn.addEventListener('click', startQuiz);
+            prevBtn.addEventListener('click', showPreviousQuestion);
+            nextBtn.addEventListener('click', showNextQuestion);
+            submitBtn.addEventListener('click', submitQuiz);
+            restartBtn.addEventListener('click', restartQuiz);
+        }
+
+        function startQuiz() {
+            const userName = userNameInput.value.trim();
+            
+            if (!userName) {
+                alert('الرجاء إدخال اسمك');
+                return;
+            }
+            
+            userAnswers = new Array(quizQuestions.length).fill(null);
+            
+            userInfoElement.textContent = `الطالب: ${userName}`;
+            resultUserInfoElement.innerHTML = `
+                <h3>الطالب: ${userName}</h3>
+                <div class="lesson-group">جميع محاور قواعد اللغة الفرنسية</div>
+            `;
+            
+            infoSection.classList.remove('active-section');
+            quizSection.classList.add('active-section');
+            
+            startTimer();
+            
+            showQuestion(currentQuestionIndex);
+            
+            updateProgressBar();
+        }
+
+        function startTimer() {
+            quizStarted = true;
+            updateTimerDisplay();
+            
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                updateTimerDisplay();
+                
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    submitQuiz();
+                }
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            
+            timerElement.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            
+            if (timeLeft <= 60) {
+                timerElement.classList.add('warning');
+            } else {
+                timerElement.classList.remove('warning');
+            }
+        }
+
+        function showQuestion(index) {
+            questionCounterElement.textContent = `السؤال ${index + 1} من ${quizQuestions.length}`;
+            
+            questionTextElement.textContent = quizQuestions[index].question;
+            
+            optionsContainer.innerHTML = '';
+            
+            const options = quizQuestions[index].options;
+            const optionLetters = ['أ', 'ب', 'ج', 'د'];
+            
+            options.forEach((option, i) => {
+                const optionElement = document.createElement('div');
+                optionElement.classList.add('option');
+                
+                if (userAnswers[index] === i) {
+                    optionElement.classList.add('selected');
+                }
+                
+                optionElement.innerHTML = `
+                    <span class="option-letter">${optionLetters[i]}</span>
+                    <span class="option-text">${option}</span>
+                `;
+                
+                optionElement.addEventListener('click', () => selectOption(i));
+                optionsContainer.appendChild(optionElement);
+            });
+            
+            prevBtn.disabled = index === 0;
+            nextBtn.disabled = index === quizQuestions.length - 1;
+            submitBtn.style.display = index === quizQuestions.length - 1 ? 'inline-block' : 'none';
+            nextBtn.style.display = index === quizQuestions.length - 1 ? 'none' : 'inline-block';
+            
+            updateProgressBar();
+        }
+
+        function selectOption(optionIndex) {
+            document.querySelectorAll('.option').forEach(option => {
+                option.classList.remove('selected');
+            });
+            
+            document.querySelectorAll('.option')[optionIndex].classList.add('selected');
+            
+            userAnswers[currentQuestionIndex] = optionIndex;
+        }
+
+        function showPreviousQuestion() {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                showQuestion(currentQuestionIndex);
+            }
+        }
+
+        function showNextQuestion() {
+            if (currentQuestionIndex < quizQuestions.length - 1) {
+                currentQuestionIndex++;
+                showQuestion(currentQuestionIndex);
+            }
+        }
+
+        function updateProgressBar() {
+            const progressPercentage = ((currentQuestionIndex + 1) / quizQuestions.length) * 100;
+            progressBar.style.width = `${progressPercentage}%`;
+        }
+
+        function submitQuiz() {
+            clearInterval(timerInterval);
+            
+            calculateScore();
+            
+            quizSection.classList.remove('active-section');
+            resultSection.classList.add('active-section');
+            
+            const percentage = Math.round((score / quizQuestions.length) * 100);
+            scoreElement.textContent = `${percentage}%`;
+            
+            if (percentage >= 80) {
+                resultTitleElement.textContent = "ممتاز! نتيجتك رائعة";
+                resultTitleElement.style.color = "#28a745";
+            } else if (percentage >= 60) {
+                resultTitleElement.textContent = "جيد! نتيجتك مرضية";
+                resultTitleElement.style.color = "#012169";
+            } else {
+                resultTitleElement.textContent = "تحتاج إلى المزيد من المذاكرة";
+                resultTitleElement.style.color = "#c8102e";
+            }
+            
+            const minutesTaken = Math.floor((600 - timeLeft) / 60);
+            const secondsTaken = (600 - timeLeft) % 60;
+            
+            resultSummaryElement.textContent = `أجبت على ${score} من أصل ${quizQuestions.length} سؤال بشكل صحيح`;
+            timeSummaryElement.textContent = `الوقت المستغرق: ${minutesTaken} دقائق و ${secondsTaken} ثانية`;
+            correctAnswersElement.textContent = `عدد الإجابات الصحيحة: ${score}`;
+            wrongAnswersElement.textContent = `عدد الإجابات الخاطئة: ${quizQuestions.length - score}`;
+        }
+
+        function calculateScore() {
+            score = 0;
+            quizQuestions.forEach((question, index) => {
+                if (userAnswers[index] === question.correctAnswer) {
+                    score++;
+                }
+            });
+        }
+
+        function restartQuiz() {
+            currentQuestionIndex = 0;
+            userAnswers = [];
+            score = 0;
+            timeLeft = 600;
+            quizStarted = false;
+            
+            timerElement.classList.remove('warning');
+            timerElement.textContent = "10:00";
+            progressBar.style.width = "0%";
+            
+            userNameInput.value = "";
+            
+            resultSection.classList.remove('active-section');
+            infoSection.classList.add('active-section');
+        }
+
+        document.addEventListener('DOMContentLoaded', initQuiz);
+    </script>
+</body>
+</html>
